@@ -23,7 +23,7 @@ https.get('https://mindicador.cl/api', res => {
     const indicators = JSON.parse(Buffer.concat(data).toString());
     currency=indicators[indicator];
     let total=Number(qty)*Number(currency.valor);
-    template=`A la fecha ${currency.fecha}\n Fue realizada la cotización con los siguientes datos:\nCantidad de pesos a convertir:${qty} pesos\nConvertido a "${indicator}" da un total de:\n$${total}`
+    template=`A la fecha ${currency.fecha}\nFue realizada la cotización con los siguientes datos:\nCantidad de pesos a convertir:${qty} pesos\nConvertido a "${indicator}" da un total de:\n$${total}`
 
     fs.writeFile(`${fileName}.${ext}`,template ,'utf8',()=>{
         console.log(template);
