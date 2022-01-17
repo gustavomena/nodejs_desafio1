@@ -1,11 +1,18 @@
+const fs=require('fs');
 const https = require('https');
-let datos= null;
+const args=process.argv.slice(2);
+const fileName=args[0];
+const ext=args[1];
+const indicator=args[2];
+const qty=args[3];
+
+let currency=null;
+let template ='';
 
 https.get('https://mindicador.cl/api', res => {
   let data = [];
-  //const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';
+
   console.log('Status Code:', res.statusCode);
-  //console.log('Date in Response header:', headerDate);
 
   res.on('data', chunk => {
     data.push(chunk);
@@ -14,11 +21,21 @@ https.get('https://mindicador.cl/api', res => {
   res.on('end', () => {
     console.log('Response ended: ');
     const indicators = JSON.parse(Buffer.concat(data).toString());
+    currency=indicators[indicator];
+    let total=Number(qty)*Number(currency.valor);
+    template=`A la fecha ${currency.fecha}\n Fue realizada la cotización con los siguientes datos:\nCantidad de pesos a convertir:${qty} pesos\nConvertido a "${indicator}" da un total de:\n$${total}`
 
-    console.log( indicators.dolar);
-   datos= indicators;
+    fs.writeFile(`${fileName}.${ext}`,template ,'utf8',()=>{
+        console.log(template);
+    });
+
+
   });
 }).on('error', err => {
   console.log('Error: ', err.message);
 });
-return datos;
+
+
+
+
+
